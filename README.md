@@ -6,14 +6,25 @@ Un template completo e production-ready per sviluppare web application moderne c
 
 ## 📚 Documentazione
 
+### Getting Started
 - **[⚡ QUICKSTART.md](./QUICKSTART.md)** - Inizia subito! Setup rapido e primi esempi
 - **[📋 TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md)** - Come usare questo repo come template per nuovi progetti
+- **[🏗️ ARCHITECTURE.md](./ARCHITECTURE.md)** - Scegli l'approccio: Clone Completo vs Template as Package
+
+### Advanced
+- **[📦 TEMPLATE_AS_PACKAGE.md](./TEMPLATE_AS_PACKAGE.md)** - Usare il template come package riutilizzabile (avanzato)
 - **[🔧 MAINTENANCE.md](./MAINTENANCE.md)** - Come mantenere il template aggiornato
+
+### Workflow & Contributing
 - **[🔄 WORKFLOW.md](./WORKFLOW.md)** - Git workflow e branching strategy dettagliati
 - **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines per contribuire
+
+### For AI Assistants
 - **[🤖 .claude/template-guide.md](./.claude/template-guide.md)** - Guida completa per Claude AI
 
-> 💡 **Nuovo progetto?** Inizia da [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) per clonare questo template!
+> 💡 **Nuovo progetto?**
+> 1. Leggi [ARCHITECTURE.md](./ARCHITECTURE.md) per scegliere l'approccio
+> 2. Segui [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) (clone) o [TEMPLATE_AS_PACKAGE.md](./TEMPLATE_AS_PACKAGE.md) (package)
 >
 > 🔧 **Mantenere aggiornato?** Leggi [MAINTENANCE.md](./MAINTENANCE.md) per dependency updates!
 
