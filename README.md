@@ -8,11 +8,14 @@ Un template completo e production-ready per sviluppare web application moderne c
 
 - **[⚡ QUICKSTART.md](./QUICKSTART.md)** - Inizia subito! Setup rapido e primi esempi
 - **[📋 TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md)** - Come usare questo repo come template per nuovi progetti
+- **[🔧 MAINTENANCE.md](./MAINTENANCE.md)** - Come mantenere il template aggiornato
 - **[🔄 WORKFLOW.md](./WORKFLOW.md)** - Git workflow e branching strategy dettagliati
 - **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines per contribuire
 - **[🤖 .claude/template-guide.md](./.claude/template-guide.md)** - Guida completa per Claude AI
 
 > 💡 **Nuovo progetto?** Inizia da [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) per clonare questo template!
+>
+> 🔧 **Mantenere aggiornato?** Leggi [MAINTENANCE.md](./MAINTENANCE.md) per dependency updates!
 
 ## ✨ Features
 

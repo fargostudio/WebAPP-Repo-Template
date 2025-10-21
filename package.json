@@ -18,7 +18,11 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "test": "npm run test --workspaces",
     "storybook": "npm run storybook --workspace=frontend",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "check-updates": "./scripts/check-updates.sh",
+    "update-deps": "./scripts/update-deps.sh interactive",
+    "update-deps:minor": "./scripts/update-deps.sh minor",
+    "update-deps:latest": "./scripts/update-deps.sh latest"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.0.0",

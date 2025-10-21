@@ -1,0 +1,148 @@
+# Dependabot configuration for automated dependency updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+
+version: 2
+updates:
+  # Root workspace
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    reviewers:
+      - "fargostudio"  # Cambia con il tuo username
+    labels:
+      - "dependencies"
+      - "automated"
+    versioning-strategy: increase
+    # Group minor and patch updates together
+    groups:
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Frontend app
+  - package-ecosystem: "npm"
+    directory: "/apps/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps-frontend)"
+      include: "scope"
+    reviewers:
+      - "fargostudio"
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "automated"
+    versioning-strategy: increase
+    groups:
+      react-ecosystem:
+        patterns:
+          - "react*"
+          - "@types/react*"
+      build-tools:
+        patterns:
+          - "vite*"
+          - "@vitejs/*"
+          - "typescript"
+      ui-libraries:
+        patterns:
+          - "@radix-ui/*"
+          - "framer-motion"
+          - "tailwindcss"
+          - "class-variance-authority"
+      storybook:
+        patterns:
+          - "@storybook/*"
+          - "storybook"
+
+  # Backend app
+  - package-ecosystem: "npm"
+    directory: "/apps/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps-backend)"
+      include: "scope"
+    reviewers:
+      - "fargostudio"
+    labels:
+      - "dependencies"
+      - "backend"
+      - "automated"
+    versioning-strategy: increase
+    groups:
+      express-ecosystem:
+        patterns:
+          - "express*"
+          - "@types/express*"
+          - "cors"
+          - "helmet"
+      validation-logging:
+        patterns:
+          - "zod"
+          - "winston"
+      database:
+        patterns:
+          - "@prisma/*"
+          - "prisma"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "ci"
+      - "automated"
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/apps/frontend"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(docker)"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/apps/backend"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(docker)"
+    labels:
+      - "dependencies"
+      - "docker"
+
+# Note:
+# - Dependabot creerà PR automatiche ogni lunedì
+# - Le PR saranno raggruppate per tipo (react, express, etc.)
+# - Major updates saranno separate (richiedono review manuale)
+# - Minor e patch updates saranno raggruppate
+# - Puoi configurare auto-merge per patch updates se vuoi

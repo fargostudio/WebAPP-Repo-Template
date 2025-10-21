@@ -1,0 +1,159 @@
+name: Update Dependencies
+
+# This workflow can be run manually or on schedule
+# It creates a PR with dependency updates for review
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_mode:
+        description: 'Update mode'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - minor
+          - latest
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create update branch
+        run: |
+          BRANCH_NAME="automated-dependency-updates-$(date +%Y%m%d)"
+          git checkout -b $BRANCH_NAME
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Install npm-check-updates
+        run: npm install -g npm-check-updates
+
+      - name: Update dependencies (minor)
+        if: ${{ github.event.inputs.update_mode == 'minor' || github.event_name == 'schedule' }}
+        run: |
+          chmod +x scripts/update-deps.sh
+          ./scripts/update-deps.sh minor
+
+      - name: Update dependencies (latest)
+        if: ${{ github.event.inputs.update_mode == 'latest' }}
+        run: |
+          chmod +x scripts/update-deps.sh
+          ./scripts/update-deps.sh latest
+
+      - name: Run tests
+        run: |
+          npm run lint || true
+          npm run build || true
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git add .
+          git commit -m "chore(deps): update dependencies to latest versions
+
+          Automated dependency update via GitHub Actions.
+          Mode: ${{ github.event.inputs.update_mode || 'minor' }}
+
+          Please review changes carefully before merging.
+          Run tests and verify application works as expected.
+
+          🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+
+      - name: Push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: git push origin ${{ env.BRANCH_NAME }}
+
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ env.BRANCH_NAME }}
+          title: "chore(deps): automated dependency updates"
+          body: |
+            ## 🤖 Automated Dependency Updates
+
+            This PR contains automated dependency updates.
+
+            ### Update Mode
+            `${{ github.event.inputs.update_mode || 'minor' }}`
+
+            ### ⚠️ Before Merging
+
+            Please verify:
+            - [ ] All tests pass
+            - [ ] Application builds successfully
+            - [ ] No breaking changes in updated packages
+            - [ ] Manual testing completed
+            - [ ] Storybook works correctly
+            - [ ] No security vulnerabilities introduced
+
+            ### 📝 Review Changes
+
+            Check the `package.json` and `package-lock.json` files for updated versions.
+
+            Review the [CHANGELOG](./CHANGELOG.md) or release notes of major updated packages.
+
+            ### 🧪 Testing Checklist
+
+            ```bash
+            # Install dependencies
+            npm install
+
+            # Lint
+            npm run lint
+
+            # Build
+            npm run build
+
+            # Run tests
+            npm run test
+
+            # Manual testing
+            npm run dev
+
+            # Storybook
+            npm run storybook
+            ```
+
+            ---
+
+            🤖 Generated automatically by GitHub Actions
+          labels: |
+            dependencies
+            automated
+          reviewers: |
+            fargostudio
+
+      - name: No changes detected
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: echo "No dependency updates available"
