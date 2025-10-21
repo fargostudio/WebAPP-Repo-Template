@@ -4,6 +4,16 @@
 
 Un template completo e production-ready per sviluppare web application moderne con un focus particolare su **design eccezionale**, **animazioni fluide** e **user experience memorabile**.
 
+## 📚 Documentazione
+
+- **[⚡ QUICKSTART.md](./QUICKSTART.md)** - Inizia subito! Setup rapido e primi esempi
+- **[📋 TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md)** - Come usare questo repo come template per nuovi progetti
+- **[🔄 WORKFLOW.md](./WORKFLOW.md)** - Git workflow e branching strategy dettagliati
+- **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines per contribuire
+- **[🤖 .claude/template-guide.md](./.claude/template-guide.md)** - Guida completa per Claude AI
+
+> 💡 **Nuovo progetto?** Inizia da [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) per clonare questo template!
+
 ## ✨ Features
 
 ### 🎨 Design & UX
