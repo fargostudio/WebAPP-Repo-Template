@@ -8,6 +8,7 @@ Un template completo e production-ready per sviluppare web application moderne c
 
 ### Getting Started
 - **[⚡ QUICKSTART.md](./QUICKSTART.md)** - Inizia subito! Setup rapido e primi esempi
+- **[🚀 docs/SETUP_GUIDE.md](./docs/SETUP_GUIDE.md)** - Setup wizard e project configuration
 - **[📋 TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md)** - Come usare questo repo come template per nuovi progetti
 - **[🏗️ ARCHITECTURE.md](./ARCHITECTURE.md)** - Scegli l'approccio: Clone Completo vs Template as Package
 

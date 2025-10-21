@@ -32,27 +32,28 @@ Se questo repo è configurato come template su GitHub:
 git clone <questo-repo-url> my-new-app
 cd my-new-app
 
-# 2. Rimuovi il remote originale
-git remote remove origin
+# 2. ✨ ESEGUI SETUP WIZARD (IMPORTANTE!)
+npm run setup
+# Ti guiderà attraverso:
+# - Personalizzazione package.json
+# - Configurazione README
+# - Setup Git (opzionale)
+# - Rimozione esempi (opzionale)
+# - Creazione docs iniziali
 
-# 3. Crea nuovo repository su GitHub/GitLab
-
-# 4. Aggiungi nuovo remote
-git remote add origin <tuo-nuovo-repo-url>
-
-# 5. Push
-git push -u origin main
-
-# 6. Installa dipendenze
+# 3. Installa dipendenze
 npm install
 
-# 7. Setup
-npm run prepare
+# 4. Configura environment
 cp apps/backend/.env.example apps/backend/.env
+# Edita .env con i tuoi valori
 
-# 8. Inizia a sviluppare!
+# 5. Inizia a sviluppare!
 npm run dev
 ```
+
+> 💡 **Il setup wizard** personalizza automaticamente tutti i file necessari!
+> Vedi [docs/SETUP_GUIDE.md](./docs/SETUP_GUIDE.md) per dettagli.
 
 ## 📝 Personalizzazione Iniziale
 
