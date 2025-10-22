@@ -1,10 +1,42 @@
 import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Hero from './components/Hero';
 import AnimatedCard from './components/AnimatedCard';
 import ThemeToggle from './components/ThemeToggle';
+import { AuthDemo } from './pages/AuthDemo';
+import { ProtectedRoute } from './modules/auth/components/ProtectedRoute';
 
-function App() {
+// Protected Page Example
+function ProtectedPage() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="container mx-auto px-4 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass p-12 rounded-2xl text-center"
+        >
+          <h1 className="text-4xl font-bold gradient-text mb-4">
+            🔒 Protected Page
+          </h1>
+          <p className="text-muted-foreground mb-8">
+            This page is only accessible to authenticated users!
+          </p>
+          <Link
+            to="/demo/auth"
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all"
+          >
+            Back to Auth Demo
+          </Link>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// Home Page Component
+function HomePage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   const toggleTheme = () => {
@@ -16,6 +48,17 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <ThemeToggle theme={theme} onToggle={toggleTheme} />
+
+      {/* Auth Demo Link */}
+      <div className="absolute top-6 right-20 z-10">
+        <Link
+          to="/demo/auth"
+          className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all flex items-center gap-2"
+        >
+          <span>🔐</span>
+          <span>Auth Demo</span>
+        </Link>
+      </div>
 
       <Hero />
 
@@ -95,6 +138,28 @@ function App() {
         </div>
       </section>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/demo/auth" element={<AuthDemo />} />
+
+        {/* Protected routes */}
+        <Route
+          path="/protected"
+          element={
+            <ProtectedRoute>
+              <ProtectedPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
