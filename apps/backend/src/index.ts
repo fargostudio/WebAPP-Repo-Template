@@ -6,6 +6,7 @@ import { logger } from './utils/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import healthRouter from './routes/health.js';
 import apiRouter from './routes/api.js';
+import authRouter from './modules/auth/auth.routes.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/health', healthRouter);
+app.use('/api/auth', authRouter);
 app.use('/api', apiRouter);
 
 // Root endpoint

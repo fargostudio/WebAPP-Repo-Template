@@ -24,29 +24,61 @@ services:
       - NODE_ENV=production
       - PORT=5000
       - FRONTEND_URL=http://localhost:3000
+      - DATABASE_URL=postgresql://webapp:webapp_password@postgres:5432/webapp_db
+      - REDIS_URL=redis://redis:6379
     volumes:
       - ./apps/backend/logs:/app/logs
     networks:
       - app-network
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
-  # Uncomment if you need a database
-  # postgres:
-  #   image: postgres:16-alpine
-  #   environment:
-  #     POSTGRES_USER: webapp
-  #     POSTGRES_PASSWORD: webapp_password
-  #     POSTGRES_DB: webapp_db
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - '5432:5432'
-  #   networks:
-  #     - app-network
+  # Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: webapp-postgres
+    environment:
+      POSTGRES_USER: webapp
+      POSTGRES_PASSWORD: webapp_password
+      POSTGRES_DB: webapp_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U webapp']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for caching, sessions, token blacklist)
+  redis:
+    image: redis:7-alpine
+    container_name: webapp-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   app-network:
     driver: bridge
 
-# volumes:
-#   postgres_data:
+volumes:
+  postgres_data:
+  redis_data:
