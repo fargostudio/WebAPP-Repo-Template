@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Wizard - Web App Template</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>🧙 Setup Wizard</h1>
+      <p>Configure your Web App Template in a few easy steps</p>
+    </header>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+      <div class="step active" data-step="1">
+        <div class="step-number">1</div>
+        <div class="step-label">Prerequisites</div>
+      </div>
+      <div class="step" data-step="2">
+        <div class="step-number">2</div>
+        <div class="step-label">Project Info</div>
+      </div>
+      <div class="step" data-step="3">
+        <div class="step-number">3</div>
+        <div class="step-label">Admin User</div>
+      </div>
+      <div class="step" data-step="4">
+        <div class="step-number">4</div>
+        <div class="step-label">Setup</div>
+      </div>
+      <div class="step" data-step="5">
+        <div class="step-number">5</div>
+        <div class="step-label">Complete</div>
+      </div>
+    </div>
+
+    <!-- Wizard Content -->
+    <div class="wizard-content">
+
+      <!-- Step 1: Prerequisites -->
+      <div class="wizard-step active" id="step-1">
+        <h2>✅ Check Prerequisites</h2>
+        <p>Let's make sure you have everything installed...</p>
+
+        <div id="prereq-checks" class="prereq-list">
+          <div class="loading">Checking...</div>
+        </div>
+
+        <div class="button-group">
+          <button id="btn-check-prereq" class="btn btn-primary">Check Again</button>
+          <button id="btn-next-1" class="btn btn-primary" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Project Info -->
+      <div class="wizard-step" id="step-2">
+        <h2>📋 Project Information</h2>
+        <p>Tell us about your project</p>
+
+        <form id="form-project" class="form">
+          <div class="form-group">
+            <label for="projectName">Project Name</label>
+            <input type="text" id="projectName" name="projectName" placeholder="my-awesome-app" required pattern="[a-z0-9-]+">
+            <small>Lowercase letters, numbers, and hyphens only</small>
+          </div>
+
+          <div class="form-group">
+            <label for="projectDescription">Description</label>
+            <textarea id="projectDescription" name="projectDescription" placeholder="A brief description of your project" rows="3" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="authorName">Your Name</label>
+            <input type="text" id="authorName" name="authorName" placeholder="John Doe" required>
+          </div>
+
+          <div class="form-group">
+            <label for="authorEmail">Your Email</label>
+            <input type="email" id="authorEmail" name="authorEmail" placeholder="john@example.com" required>
+          </div>
+        </form>
+
+        <div class="button-group">
+          <button id="btn-back-2" class="btn btn-secondary">← Back</button>
+          <button id="btn-next-2" class="btn btn-primary">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Admin User -->
+      <div class="wizard-step" id="step-3">
+        <h2>👤 Admin User</h2>
+        <p>Create your admin account</p>
+
+        <form id="form-admin" class="form">
+          <div class="form-group">
+            <label for="adminEmail">Admin Email</label>
+            <input type="email" id="adminEmail" name="adminEmail" placeholder="admin@yourapp.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="adminPassword">Admin Password</label>
+            <input type="password" id="adminPassword" name="adminPassword" placeholder="Min 8 characters" required minlength="8">
+            <small>At least 8 characters</small>
+          </div>
+
+          <div class="form-group">
+            <label for="adminPasswordConfirm">Confirm Password</label>
+            <input type="password" id="adminPasswordConfirm" name="adminPasswordConfirm" placeholder="Confirm password" required minlength="8">
+          </div>
+
+          <div class="info-box">
+            <strong>ℹ️ Note:</strong> JWT secrets will be automatically generated for maximum security.
+          </div>
+        </form>
+
+        <div class="button-group">
+          <button id="btn-back-3" class="btn btn-secondary">← Back</button>
+          <button id="btn-next-3" class="btn btn-primary">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Setup Running -->
+      <div class="wizard-step" id="step-4">
+        <h2>⚙️ Running Setup</h2>
+        <p>Please wait while we configure your application...</p>
+
+        <div id="setup-progress" class="setup-progress">
+          <div class="loading">Preparing...</div>
+        </div>
+
+        <div id="setup-error" class="error-box" style="display: none;">
+          <strong>❌ Setup Failed</strong>
+          <p id="error-message"></p>
+          <button id="btn-retry" class="btn btn-primary">Retry Setup</button>
+        </div>
+      </div>
+
+      <!-- Step 5: Complete -->
+      <div class="wizard-step" id="step-5">
+        <h2>🎉 Setup Complete!</h2>
+        <p>Your application is ready to use</p>
+
+        <div class="success-box">
+          <h3>✅ All Done!</h3>
+          <p>Your Web App Template has been successfully configured.</p>
+        </div>
+
+        <div class="credentials-box">
+          <h4>🔐 Admin Credentials</h4>
+          <div class="credential-row">
+            <span>Email:</span>
+            <code id="final-email"></code>
+          </div>
+          <div class="credential-row">
+            <span>Password:</span>
+            <code id="final-password"></code>
+          </div>
+        </div>
+
+        <div class="next-steps-box">
+          <h4>🚀 Next Steps</h4>
+          <ol>
+            <li>Close this wizard (Ctrl+C in terminal)</li>
+            <li>Run <code>npm run dev</code> to start the application</li>
+            <li>Open <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></li>
+            <li>Click "🔐 Auth Demo" and login with your admin credentials</li>
+          </ol>
+        </div>
+
+        <div class="button-group">
+          <a href="http://localhost:3000" target="_blank" class="btn btn-primary btn-lg">🚀 Open Application</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Web App Template Setup Wizard • <a href="/README_AUTH.md" target="_blank">Documentation</a></p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -74,9 +74,41 @@ Un template completo e production-ready per sviluppare web application moderne c
 
 - Node.js >= 20.0.0
 - npm >= 10.0.0
-- Docker (opzionale)
+- Docker (opzionale, raccomandato)
 
-### Installazione
+### Setup Automatico (Raccomandato) 🪄
+
+Il modo più semplice per iniziare è usare il **Setup Wizard** - un'interfaccia web che configura automaticamente tutto:
+
+```bash
+# Clona il repository
+git clone <your-repo-url>
+cd webapp-template
+
+# Installa le dipendenze base
+npm install
+
+# Avvia il setup wizard
+npm run setup:wizard
+```
+
+Poi apri il browser su **http://localhost:3001** e segui i 5 semplici step:
+1. ✅ Verifica prerequisiti
+2. 📝 Informazioni progetto
+3. 👤 Crea utente admin
+4. ⚙️ Setup automatico
+5. 🎉 Fatto! Credenziali e istruzioni
+
+Il wizard configura automaticamente:
+- Variabili d'ambiente con JWT secrets
+- Database PostgreSQL e Redis con Docker
+- Prisma migrations
+- Utente admin di test
+- Tutto pronto per `npm run dev`!
+
+### Setup Manuale (Alternativo)
+
+Se preferisci configurare manualmente:
 
 ```bash
 # Clona il repository
@@ -91,7 +123,12 @@ npm run prepare
 
 # Copia i file di environment
 cp apps/backend/.env.example apps/backend/.env
+
+# Configura le variabili d'ambiente (vedi README_AUTH.md)
+# Avvia Docker, esegui migrations, crea seed, ecc.
 ```
+
+Per istruzioni complete sul setup manuale, consulta **[README_AUTH.md](./README_AUTH.md)**.
 
 ### Sviluppo
 

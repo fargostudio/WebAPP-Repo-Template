@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "setup": "node scripts/setup-new-project.js",
+    "setup:wizard": "node scripts/setup-wizard/server.js",
     "generate-overview": "node scripts/generate-overview.js",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "npm run dev --workspace=frontend",
