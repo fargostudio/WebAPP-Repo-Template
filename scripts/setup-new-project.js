@@ -45,8 +45,70 @@ const config = {
   authorEmail: '',
   gitRepo: '',
   projectType: '',
+  fontProvider: 'google',
+  iconLibrary: 'lucide',
   removeExamples: false,
   setupGit: true,
+};
+
+// Font providers (all FREE)
+const fontProviders = {
+  '1': {
+    name: 'Google Fonts',
+    value: 'google',
+    description: '1400+ fonts, most popular',
+    url: 'https://fonts.google.com',
+  },
+  '2': {
+    name: 'Bunny Fonts',
+    value: 'bunny',
+    description: 'Privacy-focused, GDPR compliant (same as Google)',
+    url: 'https://fonts.bunny.net',
+  },
+  '3': {
+    name: 'Font Share',
+    value: 'fontshare',
+    description: 'Curated quality fonts, free for commercial use',
+    url: 'https://www.fontshare.com',
+  },
+  '4': {
+    name: 'Fontsource',
+    value: 'fontsource',
+    description: 'Self-hosted via NPM, privacy-friendly',
+    url: 'https://fontsource.org',
+  },
+};
+
+// Icon libraries (all FLAT design, FREE)
+const iconLibraries = {
+  '1': {
+    name: 'Lucide Icons',
+    value: 'lucide',
+    description: 'Beautiful flat icons, 1000+ (DEFAULT - già incluso!)',
+    package: 'lucide-react',
+    url: 'https://lucide.dev',
+  },
+  '2': {
+    name: 'Heroicons',
+    value: 'heroicons',
+    description: 'By Tailwind team, super clean, 292 icons',
+    package: '@heroicons/react',
+    url: 'https://heroicons.com',
+  },
+  '3': {
+    name: 'Phosphor Icons',
+    value: 'phosphor',
+    description: 'Modern, 6 weights, 1248 icons',
+    package: 'phosphor-react',
+    url: 'https://phosphoricons.com',
+  },
+  '4': {
+    name: 'Iconoir',
+    value: 'iconoir',
+    description: 'Ultra minimalist, 1500+ icons',
+    package: 'iconoir-react',
+    url: 'https://iconoir.com',
+  },
 };
 
 // Helper functions
@@ -138,6 +200,50 @@ async function collectProjectType() {
   };
 
   config.projectType = types[type] || 'Other';
+}
+
+async function collectDesignPreferences() {
+  log('\n🎨 Preferenze Design\n', 'blue');
+
+  // Font provider
+  log('\n📝 Font Provider (tutti FREE):\n', 'bright');
+  Object.entries(fontProviders).forEach(([key, provider]) => {
+    log(`${key}. ${provider.name}`, 'cyan');
+    log(`   ${provider.description}`, 'dim');
+  });
+  log('');
+
+  let validFont = false;
+  while (!validFont) {
+    const fontChoice = await question('Scegli font provider (1-4, default: 1): ') || '1';
+    if (fontProviders[fontChoice]) {
+      config.fontProvider = fontProviders[fontChoice].value;
+      validFont = true;
+      log(`✅ Scelto: ${fontProviders[fontChoice].name}`, 'green');
+    } else {
+      log('❌ Scelta non valida', 'red');
+    }
+  }
+
+  // Icon library
+  log('\n✨ Libreria Icone (tutte FLAT design, FREE):\n', 'bright');
+  Object.entries(iconLibraries).forEach(([key, lib]) => {
+    log(`${key}. ${lib.name}`, 'cyan');
+    log(`   ${lib.description}`, 'dim');
+  });
+  log('');
+
+  let validIcon = false;
+  while (!validIcon) {
+    const iconChoice = await question('Scegli libreria icone (1-4, default: 1): ') || '1';
+    if (iconLibraries[iconChoice]) {
+      config.iconLibrary = iconLibraries[iconChoice].value;
+      validIcon = true;
+      log(`✅ Scelto: ${iconLibraries[iconChoice].name}`, 'green');
+    } else {
+      log('❌ Scelta non valida', 'red');
+    }
+  }
 }
 
 async function collectOptions() {
@@ -324,7 +430,7 @@ export default App;
   log('✅ Updated App.tsx', 'green');
 }
 
-function setupGit() {
+async function setupGit() {
   if (!config.setupGit) return;
 
   try {
@@ -462,6 +568,86 @@ ${config.gitRepo ? `**Repository:** ${config.gitRepo}` : ''}
   log('✅ Created docs/OVERVIEW.md', 'green');
 }
 
+function installIconLibrary() {
+  const selectedLib = Object.values(iconLibraries).find(
+    (lib) => lib.value === config.iconLibrary
+  );
+
+  if (!selectedLib) return;
+
+  // Lucide is already included by default
+  if (config.iconLibrary === 'lucide') {
+    log('✅ Lucide Icons already included', 'green');
+    return;
+  }
+
+  // Add icon library to frontend package.json
+  try {
+    const frontendPackagePath = path.join(process.cwd(), 'apps/frontend/package.json');
+    const packageJson = JSON.parse(fs.readFileSync(frontendPackagePath, 'utf8'));
+
+    if (!packageJson.dependencies) {
+      packageJson.dependencies = {};
+    }
+
+    // Add the icon library package
+    packageJson.dependencies[selectedLib.package] = '^2.0.0';
+
+    fs.writeFileSync(frontendPackagePath, JSON.stringify(packageJson, null, 2) + '\n');
+    log(`✅ Added ${selectedLib.package} to frontend dependencies`, 'green');
+  } catch (error) {
+    log(`⚠️  Could not add icon library: ${error.message}`, 'yellow');
+  }
+}
+
+function configureFontProvider() {
+  const selectedProvider = Object.values(fontProviders).find(
+    (provider) => provider.value === config.fontProvider
+  );
+
+  if (!selectedProvider) return;
+
+  const indexPath = path.join(process.cwd(), 'apps/frontend/index.html');
+
+  try {
+    let indexHtml = fs.readFileSync(indexPath, 'utf8');
+
+    // Font configuration based on provider
+    let fontLink = '';
+    let fontComment = '';
+
+    switch (config.fontProvider) {
+      case 'google':
+        fontLink = '    <link rel="preconnect" href="https://fonts.googleapis.com">\n    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n    <!-- Add your Google Fonts here: https://fonts.google.com -->\n    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">';
+        fontComment = 'Google Fonts';
+        break;
+      case 'bunny':
+        fontLink = '    <link rel="preconnect" href="https://fonts.bunny.net">\n    <!-- Privacy-focused alternative to Google Fonts: https://fonts.bunny.net -->\n    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet">';
+        fontComment = 'Bunny Fonts (GDPR compliant)';
+        break;
+      case 'fontshare':
+        fontLink = '    <!-- Font Share: https://www.fontshare.com -->\n    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">';
+        fontComment = 'Font Share';
+        break;
+      case 'fontsource':
+        fontLink = '    <!-- Fontsource (self-hosted via NPM): https://fontsource.org -->\n    <!-- Install: npm install @fontsource/inter -->\n    <!-- Then import in main.tsx: import "@fontsource/inter"; -->';
+        fontComment = 'Fontsource (NPM package)';
+        break;
+    }
+
+    // Add font link before </head>
+    indexHtml = indexHtml.replace(
+      '</head>',
+      `\n    <!-- ${fontComment} -->\n${fontLink}\n  </head>`
+    );
+
+    fs.writeFileSync(indexPath, indexHtml);
+    log(`✅ Configured ${selectedProvider.name} in index.html`, 'green');
+  } catch (error) {
+    log(`⚠️  Could not configure fonts: ${error.message}`, 'yellow');
+  }
+}
+
 // Summary
 function showSummary() {
   log('\n╔════════════════════════════════════════════════════════════╗', 'green');
@@ -475,6 +661,12 @@ function showSummary() {
   log(`  Author: ${config.authorName}`, 'cyan');
   if (config.authorEmail) log(`  Email: ${config.authorEmail}`, 'cyan');
   if (config.gitRepo) log(`  Repository: ${config.gitRepo}`, 'cyan');
+
+  log('\n🎨 Design Preferences:\n', 'bright');
+  const selectedFont = Object.values(fontProviders).find(p => p.value === config.fontProvider);
+  const selectedIcon = Object.values(iconLibraries).find(l => l.value === config.iconLibrary);
+  log(`  Font Provider: ${selectedFont ? selectedFont.name : 'Google Fonts'}`, 'cyan');
+  log(`  Icon Library: ${selectedIcon ? selectedIcon.name : 'Lucide Icons'}`, 'cyan');
 
   log('\n📁 Files Updated:\n', 'bright');
   log('  ✅ package.json (root)', 'green');
@@ -509,6 +701,7 @@ async function main() {
 
     await collectProjectInfo();
     await collectProjectType();
+    await collectDesignPreferences();
     await collectOptions();
 
     log('\n🔧 Configuring project...\n', 'yellow');
@@ -535,11 +728,13 @@ async function main() {
 
     updateReadme();
     updateEnvFiles();
+    configureFontProvider();
+    installIconLibrary();
     removeExampleComponents();
     createProjectOverview();
 
     if (config.setupGit) {
-      setupGit();
+      await setupGit();
     }
 
     showSummary();
