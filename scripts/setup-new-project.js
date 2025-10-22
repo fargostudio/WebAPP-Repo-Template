@@ -47,6 +47,7 @@ const config = {
   projectType: '',
   fontProvider: 'google',
   iconLibrary: 'lucide',
+  includeAceternity: false,
   removeExamples: false,
   setupGit: true,
 };
@@ -243,6 +244,24 @@ async function collectDesignPreferences() {
     } else {
       log('❌ Scelta non valida', 'red');
     }
+  }
+
+  // Aceternity UI
+  log('\n🌟 Aceternity UI (componenti bleeding-edge con animazioni WOW):\n', 'bright');
+  log('   Aceternity UI offre componenti React ultra-moderni con:', 'dim');
+  log('   • Animazioni fluide e professionali', 'dim');
+  log('   • Design bleeding-edge', 'dim');
+  log('   • Basato su Tailwind CSS + Framer Motion', 'dim');
+  log('   • Componenti copiabili (come shadcn/ui)', 'dim');
+  log('   https://ui.aceternity.com\n', 'cyan');
+
+  const includeAceternity = await question('Preparare il template per Aceternity UI? (y/n, default: n): ') || 'n';
+  config.includeAceternity = includeAceternity.toLowerCase() === 'y';
+
+  if (config.includeAceternity) {
+    log('✅ Aceternity UI verrà configurato!', 'green');
+  } else {
+    log('⏭️  Aceternity UI non verrà configurato (potrai sempre aggiungerlo dopo)', 'dim');
   }
 }
 
@@ -648,6 +667,170 @@ function configureFontProvider() {
   }
 }
 
+function setupAceternityUI() {
+  if (!config.includeAceternity) return;
+
+  try {
+    // 1. Add required dependencies
+    const frontendPackagePath = path.join(process.cwd(), 'apps/frontend/package.json');
+    const packageJson = JSON.parse(fs.readFileSync(frontendPackagePath, 'utf8'));
+
+    if (!packageJson.dependencies) {
+      packageJson.dependencies = {};
+    }
+
+    // Add tailwind-merge and clsx (required for cn() utility)
+    packageJson.dependencies['tailwind-merge'] = '^2.5.5';
+    packageJson.dependencies['clsx'] = '^2.1.1';
+
+    fs.writeFileSync(frontendPackagePath, JSON.stringify(packageJson, null, 2) + '\n');
+    log('✅ Added Aceternity UI dependencies (tailwind-merge, clsx)', 'green');
+
+    // 2. Create lib folder and utils.ts
+    const libDir = path.join(process.cwd(), 'apps/frontend/src/lib');
+    if (!fs.existsSync(libDir)) {
+      fs.mkdirSync(libDir, { recursive: true });
+    }
+
+    const utilsPath = path.join(libDir, 'utils.ts');
+    const utilsContent = `import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Utility function to merge Tailwind CSS classes
+ * Used by Aceternity UI and other components
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+`;
+
+    fs.writeFileSync(utilsPath, utilsContent);
+    log('✅ Created apps/frontend/src/lib/utils.ts', 'green');
+
+    // 3. Create aceternity components folder
+    const aceternityDir = path.join(
+      process.cwd(),
+      'apps/frontend/src/components/ui/aceternity'
+    );
+    if (!fs.existsSync(aceternityDir)) {
+      fs.mkdirSync(aceternityDir, { recursive: true });
+    }
+
+    log('✅ Created apps/frontend/src/components/ui/aceternity/', 'green');
+
+    // 4. Create usage guide
+    const docsDir = path.join(process.cwd(), 'docs');
+    if (!fs.existsSync(docsDir)) {
+      fs.mkdirSync(docsDir);
+    }
+
+    const guidePath = path.join(docsDir, 'ACETERNITY_UI.md');
+    const guideContent = `# Aceternity UI - Usage Guide
+
+> Ultra-modern React components with bleeding-edge animations
+
+## 🌟 What is Aceternity UI?
+
+Aceternity UI provides beautiful, animated React components built with:
+- **Tailwind CSS** - For styling
+- **Framer Motion** - For animations (already installed!)
+- **TypeScript** - Full type safety
+
+Perfect for creating "wow factor" UIs with professional animations.
+
+## 🚀 How to Use
+
+### 1. Browse Components
+Visit [Aceternity UI](https://ui.aceternity.com) and browse available components.
+
+### 2. Copy Component Code
+- Click on any component you like
+- Copy the component code
+- Paste it in \`apps/frontend/src/components/ui/aceternity/\`
+
+### 3. Install Component Dependencies
+Some components require additional packages. Check the component page for requirements.
+
+Example:
+\`\`\`bash
+npm install @tabler/icons-react
+\`\`\`
+
+### 4. Import and Use
+\`\`\`tsx
+import { HeroParallax } from '@/components/ui/aceternity/hero-parallax';
+
+function MyPage() {
+  return <HeroParallax products={products} />;
+}
+\`\`\`
+
+## 📦 Pre-installed Dependencies
+
+The following are already installed:
+- ✅ \`framer-motion\` - Animation library
+- ✅ \`tailwind-merge\` - Merge Tailwind classes
+- ✅ \`clsx\` - Conditional classes
+- ✅ \`cn()\` utility - Available in \`@/lib/utils\`
+
+## 🎯 Recommended Components
+
+### For Landing Pages
+- **Hero Parallax** - Stunning hero section with parallax effect
+- **3D Card Effect** - Interactive cards with 3D tilt
+- **Lamp Effect** - Dramatic light effect
+- **Background Beams** - Animated beam background
+
+### For Dashboards
+- **Sidebar** - Modern sidebar with animations
+- **Animated Tabs** - Smooth tab transitions
+- **Card Stack** - Stacked cards with hover effects
+
+### For Effects
+- **Text Reveal Card** - Text that reveals on hover
+- **Glowing Stars** - Background star effect
+- **Aurora Background** - Dynamic gradient background
+
+## 💡 Tips
+
+1. **Start Small**: Try one component first
+2. **Check Dependencies**: Each component lists required packages
+3. **Customize**: All components are fully customizable via Tailwind
+4. **Performance**: Components use Framer Motion efficiently
+5. **Dark Mode**: Most components support dark mode out of the box
+
+## 🔗 Resources
+
+- Official Site: https://ui.aceternity.com
+- Framer Motion Docs: https://www.framer.com/motion/
+- Tailwind CSS Docs: https://tailwindcss.com
+
+## 📝 Example: Adding a Component
+
+1. Visit https://ui.aceternity.com
+2. Find "3D Card Effect"
+3. Copy the component code
+4. Create \`apps/frontend/src/components/ui/aceternity/card-3d.tsx\`
+5. Paste the code
+6. Import: \`import { CardContainer } from '@/components/ui/aceternity/card-3d'\`
+7. Use it in your app!
+
+---
+
+🎨 Built for bleeding-edge design experiences!
+`;
+
+    fs.writeFileSync(guidePath, guideContent);
+    log('✅ Created docs/ACETERNITY_UI.md', 'green');
+
+    log('\n🌟 Aceternity UI setup complete!', 'green');
+    log('   Read docs/ACETERNITY_UI.md for usage instructions', 'dim');
+  } catch (error) {
+    log(`⚠️  Could not setup Aceternity UI: ${error.message}`, 'yellow');
+  }
+}
+
 // Summary
 function showSummary() {
   log('\n╔════════════════════════════════════════════════════════════╗', 'green');
@@ -667,6 +850,7 @@ function showSummary() {
   const selectedIcon = Object.values(iconLibraries).find(l => l.value === config.iconLibrary);
   log(`  Font Provider: ${selectedFont ? selectedFont.name : 'Google Fonts'}`, 'cyan');
   log(`  Icon Library: ${selectedIcon ? selectedIcon.name : 'Lucide Icons'}`, 'cyan');
+  log(`  Aceternity UI: ${config.includeAceternity ? '✅ Configured' : '⏭️  Not included'}`, 'cyan');
 
   log('\n📁 Files Updated:\n', 'bright');
   log('  ✅ package.json (root)', 'green');
@@ -690,6 +874,9 @@ function showSummary() {
   log('  - QUICKSTART.md - Quick start guide', 'dim');
   log('  - docs/OVERVIEW.md - Project overview', 'dim');
   log('  - docs/PROJECT_QUESTIONNAIRE.md - Complete for detailed specs', 'dim');
+  if (config.includeAceternity) {
+    log('  - docs/ACETERNITY_UI.md - How to use Aceternity UI components', 'dim');
+  }
 
   log('\n💡 TIP: Using AI code editors?\n', 'yellow');
   log('  Install Context7 for up-to-date docs on bleeding-edge libraries!', 'dim');
@@ -735,6 +922,7 @@ async function main() {
     updateEnvFiles();
     configureFontProvider();
     installIconLibrary();
+    setupAceternityUI();
     removeExampleComponents();
     createProjectOverview();
 
