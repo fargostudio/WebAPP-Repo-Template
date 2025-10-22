@@ -691,6 +691,11 @@ function showSummary() {
   log('  - docs/OVERVIEW.md - Project overview', 'dim');
   log('  - docs/PROJECT_QUESTIONNAIRE.md - Complete for detailed specs', 'dim');
 
+  log('\n💡 TIP: Using AI code editors?\n', 'yellow');
+  log('  Install Context7 for up-to-date docs on bleeding-edge libraries!', 'dim');
+  log('  → https://github.com/upstash/context7', 'cyan');
+  log('  Just say "use context7" in Cursor, Claude Desktop, or VS Code + Cline', 'dim');
+
   log('\n🚀 Ready to build something amazing!\n', 'green');
 }
 
